@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Flowbite -->
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+
+    <title>Naive Bayes Model - Traumaset</title>
+  </head>
+  <body>
+    <div class="container mx-auto py-6 max-w-3xl">
+      <!-- Header -->
+      <h1 class="text-3xl font-bold uppercase text-center mb-5">
+        Prediksi Traumaset Pasien
+      </h1>
+
+      {% if label_class %}
+      <div
+        id="alert-1"
+        class="flex items-center p-4 mb-4 rounded-lg {{ style_class[0] }}"
+        role="alert"
+      >
+        <svg
+          class="flex-shrink-0 w-4 h-4"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+        >
+          <path
+            d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"
+          />
+        </svg>
+        <span class="sr-only">Info</span>
+        <div class="ms-3 text-sm font-medium">
+          Hasil prediksi menyatakan pasien mengalami tingkat
+          <b class="">Trauma {{ label_class }}</b>
+        </div>
+        <button
+          type="button"
+          class="ms-auto -mx-1.5 -my-1.5 {{ style_class[1] }} rounded-lg focus:ring-2 focus:ring-blue-400 p-1.5 inline-flex items-center justify-center h-8 w-8"
+          data-dismiss-target="#alert-1"
+          aria-label="Close"
+        >
+          <span class="sr-only">Close</span>
+          <svg
+            class="w-3 h-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 14 14"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+            />
+          </svg>
+        </button>
+      </div>
+      {% endif %}
+
+      <!-- Form -->
+      <form action="/predict" method="post">
+        <div class="flex gap-6 mb-3">
+          <!-- Neuro Input -->
+          <div id="neuro-input" class="basis-1/2">
+            <h4 class="text-xl font-bold text-blue-700 mb-3">
+              Data Neuro Cognitive
+            </h4>
+
+            <!-- EEG Signal Amplitudo -->
+            <div class="mb-2">
+              <label
+                for="signal_amplitudo"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >EEG Signal Amplitudo</label
+              >
+              <input
+                type="text"
+                id="signal_amplitudo"
+                name="signal_amplitudo"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required
+              />
+            </div>
+
+            <!-- EEG Delta Band -->
+            <div class="mb-2">
+              <label
+                for="delta_band"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >EEG Delta Band</label
+              >
+              <input
+                type="text"
+                id="delta_band"
+                name="delta_band"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required
+              />
+            </div>
+
+            <!-- EEG Theta Band -->
+            <div class="mb-2">
+              <label
+                for="theta_band"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >EEG Theta Band</label
+              >
+              <input
+                type="text"
+                id="theta_band"
+                name="theta_band"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required
+              />
+            </div>
+
+            <!-- EEG Alpha Band -->
+            <div class="mb-2">
+              <label
+                for="alpha_band"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >EEG Alpha Band</label
+              >
+              <input
+                type="text"
+                id="alpha_band"
+                name="alpha_band"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required
+              />
+            </div>
+
+            <!-- EEG Beta Band -->
+            <div class="mb-2">
+              <label
+                for="beta_band"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >EEG Beta Band</label
+              >
+              <input
+                type="text"
+                id="beta_band"
+                name="beta_band"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                required
+              />
+            </div>
+          </div>
+
+          <!-- Fisio Input -->
+          <div id="fisio-input" class="basis-1/2">
+            <h4 class="text-xl font-bold text-blue-700 mb-3">
+              Data Fisiologis
+            </h4>
+
+            <!-- Hair Phenotype -->
+            <div class="mb-2">
+              <label
+                for="hair_phenotype"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Hair Phenotype</label
+              >
+              <select
+                id="hair_phenotype"
+                name="hair_phenotype"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                <option value="No_hair">No Hair</option>
+                <option value="Straight_hair">Straight Hair</option>
+                <option value="Curly_hair">Curly Hair</option>
+                <option value="Wavy_hair">Wavy Hair</option>
+              </select>
+            </div>
+
+            <!-- Heart Rate -->
+            <div class="mb-2">
+              <label
+                for="heart_rate"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Heart Rate</label
+              >
+              <select
+                id="heart_rate"
+                name="heart_rate"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                <option value="High_PulseRate">High Pulse Rate</option>
+                <option value="Low_PulseRate">Low Pulse Rate</option>
+                <option value="Medium_PulseRate">Medium Pulse Rate</option>
+              </select>
+            </div>
+
+            <!-- Skin Conductance -->
+            <div class="mb-2">
+              <label
+                for="skin_conductance"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Skin Conductance</label
+              >
+              <select
+                id="skin_conductance"
+                name="skin_conductance"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                <option value="High_Conductance">High Conductance</option>
+                <option value="Normal_Conductance">Normal Conductance</option>
+                <option value="Low_Conductance">Low Conductance</option>
+              </select>
+            </div>
+
+            <!-- Skin Temperature -->
+            <div class="mb-2">
+              <label
+                for="skin_temperature"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Skin Temperature</label
+              >
+              <select
+                id="skin_temperature"
+                name="skin_temperature"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                <option value="Fever">Fever</option>
+                <option value="Normal_Temperature">Normal Temperature</option>
+                <option value="Low_Temperature">Low Temperature</option>
+              </select>
+            </div>
+
+            <!-- Cortisol Level -->
+            <div class="mb-2">
+              <label
+                for="cortisol_level"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Cortisol Level</label
+              >
+              <select
+                id="cortisol_level"
+                name="cortisol_level"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                <option value="Below_AverageCL">Below Average</option>
+                <option value="AverageCL">Average</option>
+                <option value="Above_AverageCL">Above Average</option>
+              </select>
+            </div>
+
+            <!-- Systolic BP -->
+            <div class="mb-2">
+              <label
+                for="systolic_bp"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Systolic BP</label
+              >
+              <select
+                id="systolic_bp"
+                name="systolic_bp"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                <option value="Range1_LowSystolic">Range 1 Low Systolic</option>
+                <option value="Range2_LowSystolic">Range 2 Low Systolic</option>
+                <option value="Range3_LowSystolic">Range 3 Low Systolic</option>
+              </select>
+            </div>
+
+            <!-- Diastolic BP -->
+            <div class="mb-2">
+              <label
+                for="diastolic_bp"
+                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >Diastolic BP</label
+              >
+              <select
+                id="diastolic_bp"
+                name="diastolic_bp"
+                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+              >
+                <option value="VerylowDiSystolic">Very Low DiSystolic</option>
+                <option value="NormalDiSystolic">Normal DiSystolic</option>
+                <option value="LowDiSystolic">Low DiSystolic</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Button Submit -->
+        <button
+          type="submit"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+        >
+          Submit
+        </button>
+      </form>
+    </div>
+  </body>
+</html>
